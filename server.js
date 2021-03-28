@@ -2,13 +2,13 @@ require('dotenv').config()
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
-const exphbs = require('express-handlebars');
+const handlebars = require('express-handlebars');
 const routes = require('./controllers');
-const handlebars = require('./controllers');
+// const handlebars = require('./controllers');
 const helpers = require('./utils/helpers');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const hbs = exphbs.create({ helpers });
+// const hbs = handlebars.create({ helpers });
 
 const sequelize = require('./config/connection');
 // directory references
@@ -25,12 +25,12 @@ app.use(bodyParser.json());
 
 // serve up the public folder so we can request static
 // assets from the client
-app.use(express.static(`${clientDir}/public`));
+// app.use(express.static('public'));
 
 
 // Configure and link a session object with the sequelize store
 const sess = {
-  secret: 'Super secret secret',
+  secret: 'Wicked secret',
   cookie: {},
   resave: false,
   saveUninitialized: true,
