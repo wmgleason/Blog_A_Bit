@@ -37,8 +37,10 @@ User.init(
     },
   },
   {
+    // Hooks (also known as callbacks or lifecycle events), are functions which are called before and after calls in sequelize are executed.
     hooks: {
       beforeCreate: async (newUserData) => {
+        //hash password
         newUserData.password = await bcrypt.hash(newUserData.password, 10);
         return newUserData;
       },
