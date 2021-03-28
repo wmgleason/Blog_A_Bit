@@ -1,6 +1,6 @@
 {
-  "name": "Blog_A_Bit",
-  "version": "1.0.0",
+  "name": "blog_a_bit",
+  "version": "^1.0.0",
   "description": "Tech blog created with Express, Sequelize, MySQL, bcrypt and Handlebars.",
   "main": "server.js",
   "scripts": {
