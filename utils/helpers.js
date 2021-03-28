@@ -1,14 +1,28 @@
 module.exports = {
-  get_emoji: () => {
-    const randomNum = Math.random();
-    let book = "📗";
+    format_date: date => {
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
 
-    if (randomNum > 0.7) {
-      book = "📘";
-    } else if (randomNum > 0.4) {
-      book = "📙";
+      const d = new Date(date);
+
+      return `${monthNames[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    },
+    format_plural: (word, amount) => {
+        if (amount !== 1) {
+          return `${word}s`;
+        }
+
+        return word;
+    },
+    format_url: url => {
+        return url
+          .replace('http://', '')
+          .replace('https://', '')
+          .replace('www.', '')
+          .split('/')[0]
+          .split('?')[0];
+    },
+    randomNumber: (min, max) => {
+      return Math.floor(Math.random() * (max - min) + min);
     }
-
-    return `<span for="img" aria-label="book">${book}</span>`;
-  },
-};
+}
