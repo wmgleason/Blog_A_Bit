@@ -7,20 +7,19 @@ const routes = require("./controllers");
 const mysql = require("mysql");
 const Sequelize = require("sequelize");
 // const handlebars = require("./controllers");
-// const helpers = require("./utils/helpers");
+const helpers = require("./utils/helpers");
 const bodyParser = require("body-parser");
 // const cookieParser = require("cookie-parser");
 // const exphbs = handlebars.create({ helpers });
 
 const sequelize = require("./config/connection");
-// directory references
-const clientDir = path.join(__dirname, "../client");
 // Create a new sequelize store using the express-session package
+// https://www.npmjs.com/package/connect-session-sequelize
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
+const PORT = process.env.PORT || 3001;
 // Set up the express app
 const app = express();
-const PORT = process.env.PORT || 3001;
-
 // Express middleware that allows POSTing data
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -31,7 +30,7 @@ app.use(express.static("public"));
 
 
 // Configure and link a session object with the sequelize store
-const sess = {
+const session = {
   secret: "Wicked secret",
   cookie: {},
   resave: false,
@@ -42,7 +41,7 @@ const sess = {
 };
 
 // Add express-session and store as Express.js middleware
-app.use(session(sess));
+app.use(session(session));
 
 app.engine("hbs", exphbs({ extname: ".hbs"}));
 app.set("view engine", "hbs");
