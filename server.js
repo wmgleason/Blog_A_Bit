@@ -1,36 +1,38 @@
-require('dotenv').config()
-const path = require('path');
-const express = require('express');
-const session = require('express-session');
-const handlebars = require('express-handlebars');
-const routes = require('./controllers');
-// const handlebars = require('./controllers');
-const helpers = require('./utils/helpers');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-// const hbs = handlebars.create({ helpers });
+require("dotenv").config();
+const path = require("path");
+const express = require("express");
+const session = require("express-session");
+const exphbs = require("express-handlebars");
+const routes = require("./controllers");
+const mysql = require("mysql");
+const Sequelize = require("sequelize");
+// const handlebars = require("./controllers");
+// const helpers = require("./utils/helpers");
+const bodyParser = require("body-parser");
+// const cookieParser = require("cookie-parser");
+// const exphbs = handlebars.create({ helpers });
 
-const sequelize = require('./config/connection');
+const sequelize = require("./config/connection");
 // directory references
-const clientDir = path.join(__dirname, '../client');
+const clientDir = path.join(__dirname, "../client");
 // Create a new sequelize store using the express-session package
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 // Set up the express app
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Express middleware that allows POSTing data
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // serve up the public folder so we can request static
 // assets from the client
-// app.use(express.static('public'));
+app.use(express.static("public"));
 
 
 // Configure and link a session object with the sequelize store
 const sess = {
-  secret: 'Wicked secret',
+  secret: "Wicked secret",
   cookie: {},
   resave: false,
   saveUninitialized: true,
@@ -42,19 +44,36 @@ const sess = {
 // Add express-session and store as Express.js middleware
 app.use(session(sess));
 
-// app.set('view engine', 'hbs');
-// app.engine('hbs', handlebars({
-//   layoutsDir: __dirname + '/views/layouts',
-//   //new configuration parameter
-//   extname: 'hbs'
-//   }));
+app.engine("hbs", exphbs({ extname: ".hbs"}));
+app.set("view engine", "hbs");
+
+// connection pool is a cache of database connections maintained so that the connections
+// can be reused when future requests to the database are required.
+// */
+const pool  = mysql.createPool({
+  connectionLimit : 100,
+  host            : process.env.DB_HOST,
+  user            : process.env.DB_USER,
+  password        : process.env.DB_PASSWORD,
+  database        : process.env.DB_NAME
+});
+  
+pool.getConnection((err, connection) => {
+    if(err) throw err; // not connected!
+    console.log("connected as id " + connection.threadId)
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(routes);
 
+// Routes
+// const routes = require("./api/routes/user");
+app.use("/", routes);
+//Sets a basic route
+app.get("/", (req, res) => res.send("This is partially working - hooray."));
 // sequelize.sync({ force: false }).then(() => {
 //   app.listen(PORT, () => console.log(`Now listening on Port ${PORT}`));
 // });
