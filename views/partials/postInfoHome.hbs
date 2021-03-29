@@ -1,0 +1,16 @@
+<a href="/post/{{id}}" class="post-card">
+  <div class="image-section">
+    <img src="{{post_image}}" class="post-card-image">
+  </div>
+
+  <div class="post-card-text">
+    <h3 class="post-title-small">{{title}}</h3>
+    <p>{{post}}</p>
+  </div>
+
+  <div class="post-card-user">
+    <span class="date-posted">Posted on {{format_date created_at}}</span><br>
+    <span class="user-posted">by {{user.username}} <img class="user-image" src="{{user.user_image}}"></span>
+    <p>{{comments.length}} {{format_plural "comment" comments.length}}</p>
+  </div>
+</a>
