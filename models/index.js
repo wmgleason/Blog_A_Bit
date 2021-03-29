@@ -21,7 +21,6 @@ const Post = require("./Post");
 //     db[model.name] = model;
 //   });
 
-
 // User/Post associations
 User.hasMany(Post, {
   foreignKey: 'user_id'
