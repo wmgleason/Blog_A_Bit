@@ -51,18 +51,18 @@ app.set("view engine", "hbs");
 // connection pool is a cache of database connections maintained so that the connections
 // can be reused when future requests to the database are required.
 // */
-const pool  = mysql.createPool({
-  connectionLimit : 100,
-  host            : process.env.DB_HOST,
-  user            : process.env.DB_USER,
-  password        : process.env.DB_PASSWORD,
-  database        : process.env.DB_NAME
-});
+// const pool  = mysql.createPool({
+//   connectionLimit : 100,
+//   host            : process.env.DB_HOST,
+//   user            : process.env.DB_USER,
+//   password        : process.env.DB_PASSWORD,
+//   database        : process.env.DB_NAME
+// });
   
-pool.getConnection((err, connection) => {
-    if(err) throw err; // not connected!
-    console.log("connected as id " + connection.threadId)
-});
+// pool.getConnection((err, connection) => {
+//     if(err) throw err; // not connected!
+//     console.log("connected as id " + connection.threadId)
+// });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -72,9 +72,9 @@ app.use(routes);
 
 // Routes
 // const routes = require("./api/routes/user");
-app.use("/", routes);
+// app.use("/", routes);
 //Sets a basic route
-app.get("/", (req, res) => res.send("This is partially working - hooray."));
+// app.get("/", (req, res) => res.send("This is partially working - hooray."));
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on Port ${PORT}`));
 });
