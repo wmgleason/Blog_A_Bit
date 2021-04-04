@@ -4,11 +4,11 @@ const express = require("express");
 const session = require("express-session");
 const exphbs = require("express-handlebars");
 const routes = require("./controllers");
-const mysql = require("mysql");
-const Sequelize = require("sequelize");
+// const mysql = require("mysql");
+// const Sequelize = require("sequelize");
 // const handlebars = require("./controllers");
 const helpers = require("./utils/helpers");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 // const cookieParser = require("cookie-parser");
 // const exphbs = handlebars.create({ helpers });
 
@@ -23,12 +23,12 @@ const app = express();
 //using helpers with handlebars
 const hbs = exphbs.create({ helpers });
 // Express middleware that allows POSTing data
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 // serve up the public folder so we can request static
 // assets from the client
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Configure and link a session object with the sequelize store
@@ -76,7 +76,7 @@ app.use(routes);
 //Sets a basic route
 // app.get("/", (req, res) => res.send("This is partially working - hooray."));
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log(`Now listening on Port ${PORT}`));
+  app.listen(PORT, () => console.log(`App listening on Port ${PORT}`));
 });
 // start the express server
 // app.listen(PORT, () => {
