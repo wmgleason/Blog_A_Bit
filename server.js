@@ -30,7 +30,7 @@ app.use(express.static("public"));
 
 
 // Configure and link a session object with the sequelize store
-const session = {
+const Sess = {
   secret: "Wicked secret",
   cookie: {},
   resave: false,
@@ -41,7 +41,7 @@ const session = {
 };
 
 // Add express-session and store as Express.js middleware
-app.use(session(session));
+app.use(session(Sess));
 
 app.engine("hbs", exphbs({ extname: ".hbs"}));
 app.set("view engine", "hbs");

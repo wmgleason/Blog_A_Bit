@@ -1,35 +1,74 @@
-const router = require('express').Router();
-const { User } = require('../models');
-const withAuth = require('../utils/auth');
-
+const router = require("express").Router();
+const { Post, User } = require('../models');
+const sequelize = require('../config/connection');
 // Prevent non logged in users from viewing the homepage
-router.get('/', withAuth, async (req, res) => {
-  try {
-    const userData = await User.findAll({
-      attributes: { exclude: ['password'] },
-      order: [['name', 'ASC']],
+router.get('/', (req, res) => {
+  console.log(req.session);
+  Post.findAll({
+    order: [['created_at', 'DESC']],
+    attributes: [
+      'id',
+      'post',
+      'title',
+      'created_at',
+    ],
+    include: [
+      {
+        model: User,
+        attributes: ['username']
+      }
+    ]
+  })
+    .then(dbPostData => {
+      // pass all post objects into the homepage template
+      const posts = dbPostData.map(post => post.get({ plain: true }));
+      // Added loggedIn data here, as homepage was not properly displaying conditional login/logout link
+      res.render('homepage', {
+        posts,
+        loggedIn: req.session.loggedIn
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
     });
-
-    const users = userData.map((project) => project.get({ plain: true }));
-
-    res.render('homepage', {
-      users,
-      // Pass the logged-in flag to the template
-      logged_in: req.session.logged_in,
-    });
-  } catch (err) {
-    res.status(500).json(err);
-  }
 });
 
+// login
 router.get('/login', (req, res) => {
-  // If a session exists, redirect the request to the homepage
-  if (req.session.logged_in) {
+  if (req.session.loggedIn) {
     res.redirect('/');
     return;
   }
 
   res.render('login');
 });
+
+router.get('/post/:id', (req, res) => {
+  Post.findOne({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id',
+      'title',
+      'post',
+      'created_at',
+      [sequelize.literal('(SELECT COUNT(*)')]
+    ],
+    include: [
+      {
+        model: User,
+        attributes: ['username']
+      }
+    ]
+  })
+    .then(dbPostData => {
+      if (!dbPostData) {
+        res.status(404).json({ message: 'Sorry, there is no post with that id.' });
+        return;
+      }
+    });
+  });
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../config/connection');
-const { Post, User, Comment } = require('../models');
+const { Post, User } = require('../models');
 const withAuth = require('../utils/auth');
 
 // GET posts by the user currently logged in
@@ -15,22 +15,13 @@ router.get('/', withAuth, (req, res) => {
         'id',
         'title',
         'post',
-        'post_image',
         'created_at',
         [sequelize.literal('(SELECT COUNT(*)')]
       ],
       include: [
         {
-          model: Comment,
-          attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-          include: {
-            model: User,
-            attributes: ['username', 'user_image']
-          }
-        },
-        {
           model: User,
-          attributes: ['username', 'email', 'user_image']
+          attributes: ['username', 'email']
         }
       ]
     })
@@ -42,9 +33,7 @@ router.get('/', withAuth, (req, res) => {
           posts,
           username: req.session.username,
           email: req.session.email,
-          user_image: req.session.user_image,
           user_id: req.session.user_id,
-
           loggedIn: true
         });
       })
@@ -53,7 +42,6 @@ router.get('/', withAuth, (req, res) => {
         res.status(500).json(err);
       });
 });
-
 
 // GET selected post for edit-post page
 router.get('/edit/:id', (req, res) => {
@@ -65,22 +53,13 @@ router.get('/edit/:id', (req, res) => {
       'id',
       'title',
       'post',
-      'post_image',
       'created_at',
       [sequelize.literal('(SELECT COUNT(*) FROM post')]
     ],
     include: [
       {
-        model: Comment,
-        attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-        include: {
-          model: User,
-          attributes: ['username', 'user_image']
-        }
-      },
-      {
         model: User,
-        attributes: ['username', 'user_image']
+        attributes: ['username']
       }
     ]
   })
@@ -103,7 +82,5 @@ router.get('/edit/:id', (req, res) => {
       res.status(500).json(err);
     });
 });
-
-
 
 module.exports = router;
