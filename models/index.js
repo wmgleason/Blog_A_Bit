@@ -1,9 +1,9 @@
 "use strict";
 // const { Model, DataTypes } = require('sequelize');
 const Post = require("./Post");
-const Comment = require('./Comment');
-const User = require('./User');
-const sequelize = require('../config/connection');
+const Comment = require("./Comment");
+const User = require("./User");
+// const sequelize = require("../config/connection");
 
 // models relationships
 User.hasMany(Post, {
