@@ -1,8 +1,39 @@
 "use strict";
-
-const User = require("./User");
-const Post = require("./Post");
-
+const { Model, DataTypes } = require('sequelize');
+// const Post = require("./Post");
+const sequelize = require('../config/connection');
+class Post extends Model {}
+Post.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'user',
+        key: 'id'
+      }
+    }
+  },
+  {
+    sequelize,
+    freezeTableName: true,
+    underscored: true,
+    modelName: 'post'
+  }
+);
 // let sequelize;
 // if (config.use_env_variable) {
 //   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -22,12 +53,12 @@ const Post = require("./Post");
 //   });
 
 // User/Post associations
-User.hasMany(Post, {
-  foreignKey: 'user_id'
-});
+// User.hasMany(Post, {
+//   foreignKey: 'user_id'
+// });
 
-Post.belongsTo(User, {
-  foreignKey: 'user_id',
-});
+// Post.belongsTo(User, {
+//   foreignKey: 'user_id',
+// });
 
-module.exports = { User, Post };
+module.exports = Post;
