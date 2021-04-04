@@ -20,6 +20,8 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const PORT = process.env.PORT || 3001;
 // Set up the express app
 const app = express();
+//using helpers with handlebars
+const hbs = exphbs.create({ helpers });
 // Express middleware that allows POSTing data
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -73,10 +75,10 @@ app.use(routes);
 app.use("/", routes);
 //Sets a basic route
 app.get("/", (req, res) => res.send("This is partially working - hooray."));
-// sequelize.sync({ force: false }).then(() => {
-//   app.listen(PORT, () => console.log(`Now listening on Port ${PORT}`));
-// });
-// start the express server
-app.listen(PORT, () => {
-  console.log(`Success - app now listening on port ${PORT}`);
+sequelize.sync({ force: false }).then(() => {
+  app.listen(PORT, () => console.log(`Now listening on Port ${PORT}`));
 });
+// start the express server
+// app.listen(PORT, () => {
+//   console.log(`Success - app now listening on port ${PORT}`);
+// });
