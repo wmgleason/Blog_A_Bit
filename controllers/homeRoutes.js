@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const { Post, User } = require('../models');
+const { Post, User, Comment } = require('../models');
 const sequelize = require('../config/connection');
+const router = require('express').Router();
 // Prevent non logged in users from viewing the homepage
 router.get('/', (req, res) => {
   console.log(req.session);
@@ -16,7 +17,14 @@ router.get('/', (req, res) => {
       {
         model: User,
         attributes: ['username']
-      }
+      },
+      {
+        model: Comment,
+        attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+        include: {
+            model: User,
+            attributes: ['username']
+        }
     ]
   })
     .then(dbPostData => {
@@ -32,6 +40,10 @@ router.get('/', (req, res) => {
       console.log(err);
       res.status(500).json(err);
     });
+});
+
+router.get('/signup', (req, res) => {
+  res.render('signup');
 });
 
 // login
