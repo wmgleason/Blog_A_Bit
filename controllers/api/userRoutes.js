@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const { User } = require("../../models/User");
+const { User, Post, Comment } = require('../../models');
 
 router.post("/login", async (req, res) => {
   try {
-    // Find the user who matches the submitted e-mail address
+    // Find the user who matches the e-mail address entered
     const userData = await User.findOne({ where: { email: req.body.email } });
 
     if (!userData) {
@@ -36,6 +36,26 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.put('/:id', (req, res) => {
+  User.update(req.body, {
+          individualHooks: true,
+          where: {
+              id: req.params.id
+          }
+      })
+      .then(dbUserData => {
+          if (!dbUserData[0]) {
+              res.status(404).json({ message: 'No user found with this id' });
+              return;
+          }
+          res.json(dbUserData);
+      })
+      .catch(err => {
+          console.log(err);
+          res.status(500).json(err);
+      });
+});
+
 router.post("/logout", (req, res) => {
   if (req.session.logged_in) {
     // Remove the session variables
@@ -46,5 +66,25 @@ router.post("/logout", (req, res) => {
     res.status(404).end();
   }
 });
+
+router.delete('/:id', (req, res) => {
+  User.destroy({
+          where: {
+              id: req.params.id
+          }
+      })
+      .then(dbUserData => {
+          if (!dbUserData) {
+              res.status(404).json({ message: 'No user found with this id' });
+              return;
+          }
+          res.json(dbUserData);
+      })
+      .catch(err => {
+          console.log(err);
+          res.status(500).json(err);
+      });
+});
+
 
 module.exports = router;
