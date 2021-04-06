@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { Post, User, Comment } = require('../models');
 const sequelize = require('../config/connection');
-const router = require('express').Router();
+
 // Prevent non logged in users from viewing the homepage
 router.get('/', (req, res) => {
   console.log(req.session);
